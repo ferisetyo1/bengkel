@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-class Datatable extends CI_Model
+class datatable extends CI_Model
 {
     var $table;
     var $column_order;

@@ -1,5 +1,5 @@
 <?php
-class Dbhelper extends CI_Model
+class dbhelper extends CI_Model
 {
     function read($table)
     {
