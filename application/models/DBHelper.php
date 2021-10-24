@@ -1,5 +1,5 @@
 <?php
-class DBHelper extends CI_Model
+class dbhelper extends CI_Model
 {
     function read($table)
     {
@@ -51,5 +51,5 @@ class DBHelper extends CI_Model
             //   var_dump($data);
         }
     }
-    
+
 }
