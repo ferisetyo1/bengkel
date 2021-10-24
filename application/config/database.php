@@ -75,8 +75,8 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
+	'hostname' => 'ub-learningtechnology.com',
+	'username' => 'ublearni_bengkel_admin',
 	'password' => 's}A=ku.iR(7h',
 	'database' => 'ublearni_bengkel',
 	'dbdriver' => 'mysqli',
