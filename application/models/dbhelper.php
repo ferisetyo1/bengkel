@@ -1,6 +1,11 @@
 <?php
 class Dbhelper extends CI_Model
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
     function read($table)
     {
         $hasil = $this->db->get($table);
