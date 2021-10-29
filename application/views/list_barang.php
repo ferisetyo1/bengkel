@@ -50,7 +50,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                         <th>No.</th>
                                         <th>Kode Barang</th>
                                         <th>Nama</th>
-                                        <th>Harga Jual</th>
+                                        <th>Harga</th>
                                         <th>Jumlah</th>
                                         <th>Rak</th>
                                         <th>Jenis</th>

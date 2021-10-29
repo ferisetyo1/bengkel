@@ -36,10 +36,10 @@ class Transaksi extends CI_Controller
 	public function insert()
 	{
 		try {
-			$redirect=($_POST["redirect"]) ? $_POST["redirect"] :"transaksi";
+			$redirect = ($_POST["redirect"]) ? $_POST["redirect"] : "transaksi";
 			unset($_POST["redirect"]);
-			$d=date('YmdHis');
-			$_POST["no_trx"]="TRX$d";
+			$d = date('YmdHis');
+			$_POST["no_trx"] = "TRX$d";
 			$date = date_create($_POST["tgl_reservasi"]);
 			$_POST["tgl_reservasi"] = date(date_format($date, "Y-m-d H:i:s"));
 			$this->session->set_flashdata('msg', 'Transaksi berhasil ditambahkan.');
@@ -81,6 +81,47 @@ class Transaksi extends CI_Controller
 		}
 	}
 
+	public function tambahbarang($id)
+	{
+		$result = $this->dbhelper->select(TableTransaksi,'id',$id);
+		$barang=$this->dbhelper->select(TableBarangTransaksiJumlah,'id_transaksi',$id);
+		if(($result[0])){
+			$this->load->view('header', array('title' => 'Tambah barang', 'active' => 'transaksi'));
+			$this->load->view('tambah_barang',array('data'=>$result[0],'barang'=>$barang));
+			$this->load->view('footer');
+		}else{
+			$this->session->set_flashdata('msg_error', 'Transaksi tidak ada');
+			redirect('transaksi');
+		}
+	}
+
+	public function simpanbarang()
+	{
+		$pos=0;
+		$this->dbhelper->delete(TableBarangTransaksi, 'id_transaksi', $_POST['id_transaksi']);
+		foreach ($_POST['id'] as $key => $value) {
+			$d=date('YmdHis');
+			$this->db->insert(TableStock,array(
+				'barang_id'=>$value,
+				'invoice'=>"OUT$d",
+				'type'=>"out",
+				'jumlah'=>$_POST['jumlah'][$pos]*-1,
+				'keterangan'=>""
+			));
+			$this->db->insert(TableBarangTransaksi,array(
+				'id_transaksi'=>$_POST['id_transaksi'],
+				'id_barang'=>$value,
+				'id_stock'=>$this->db->insert_id(),
+				// 'jumlah'=>$_POST['jumlah'][$pos],
+				'harga_jual'=>$_POST['harga'][$pos],
+				'keterangan'=>$_POST['keterangan'][$pos],
+			));
+			$pos++;
+		}
+		$this->session->set_flashdata('msg', 'Berhasil menyimpan barang');
+		redirect('transaksi');
+	}
+
 	public function ajaxlist()
 	{
 		header('Content-Type: application/json');
@@ -100,8 +141,9 @@ class Transaksi extends CI_Controller
 			$row[] = $field->tgl_reservasi;
 			$row[] = $field->created_at;
 			$row[] = $field->update_at;
-			$row[] = '<button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#inlineForm-edit" data-json=' . "." . json_encode($field) . "'" . '>Edit</button>'
-				. '  <a type="button" class="btn btn-danger rounded-pill" href="' . base_url("jenis/delete/$field->id") . '">Hapus</a>';
+			$row[] = '<a type="button" class="btn btn-warning rounded-pill" href="' . base_url("transaksi/tambahbarang/$field->id") . '">Tambah Barang</a>'
+				. '  <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#inlineForm-edit" data-json=' . "." . json_encode($field) . "'" . '>Edit</button>'
+				. '  <a type="button" class="btn btn-danger rounded-pill" href="' . base_url("transaksi/delete/$field->id") . '">Hapus</a>';
 			$data[] = $row;
 		}
 		$output = array(

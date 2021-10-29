@@ -78,13 +78,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
 
-                        <li class="sidebar-item has-sub <?php if ($active == 'list_barang' || $active == 'list_stock' || $active == 'list_uoms' || $active == 'list_rak' || $active == 'list_jenis') echo 'active';
+                        <li class="sidebar-item has-sub <?php if ($active == 'list_barang' || $active == 'list_stock' || $active == 'list_uoms' || $active == 'list_rak' || $active == 'list_jenis' || $active ==  'list_paket') echo 'active';
                                                         else '' ?>">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-stack"></i>
                                 <span>Barang</span>
                             </a>
-                            <ul class="submenu " style="display: <?php if ($active == 'list_barang' || $active == 'list_stock' || $active == 'list_uoms' || $active == 'list_rak' || $active == 'list_jenis') echo 'block';
+                            <ul class="submenu " style="display: <?php if ($active == 'list_barang' || $active == 'list_stock' || $active == 'list_uoms' || $active == 'list_rak' || $active == 'list_jenis' || $active ==  'list_paket') echo 'block';
                                                                     else '' ?>">
                                 <li class="submenu-item <?php if ($active == 'list_barang') echo 'active';
                                                         else '' ?>">
@@ -105,6 +105,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <li class="submenu-item <?php if ($active == 'list_jenis') echo 'active';
                                                         else '' ?>">
                                     <a href="<?= base_url('jenis') ?>">Jenis</a>
+                                </li>
+                                <li class="submenu-item <?php if ($active ==  'list_paket') echo 'active';
+                                                        else '' ?>">
+                                    <a href="<?= base_url('paket') ?>">Paket</a>
                                 </li>
                             </ul>
                         </li>

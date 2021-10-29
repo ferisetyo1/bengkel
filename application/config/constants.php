@@ -88,6 +88,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 //table
 define('TableUoms',"uoms");
 define('TableRak',"rak");
+define('TablePaket',"paket");
 define('TableJenis',"jenis");
 define('TableBarang',"barang");
 define('TableBarangJumlah',"barang_dan_jumlah");
@@ -97,3 +98,7 @@ define('TablePelanggan',"pelanggan");
 define('TableKendaraan',"kendaraan");
 define('TablePemilikKendaraan',"kendaraan_pemilik");
 define('TableTransaksi',"transaksi");
+define('TableBarangTransaksi',"barang_transaksi");
+define('TableBarangTransaksiJumlah',"barang_transaksi_jumlah");
+define('TableBarangPaket',"barang_paket");
+define('TableBarangPaketNama',"barang_paket_nama");

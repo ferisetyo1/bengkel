@@ -122,4 +122,44 @@ class Barang extends CI_Controller
 		//output to json format
 		$this->output->set_output(json_encode($output));
 	}
+
+	public function ajaxlist_keranjang()
+	{
+		header('Content-Type: application/json');
+		$this->datatable->init(TableBarangJumlah, array("kode_item", "nama", "create_at", "update_at", "id"), array("kode_item", "nama", "create_at", "update_at", "id"), array("id", "asc"));
+		$list = $this->datatable->get_datatables();
+		$data = array();
+		$no = $this->input->post('start');
+		//looping data mahasiswa
+		foreach ($list as $field) {
+			if ($field->jumlah > 0) {
+				$no++;
+				$row = array();
+				//row pertama akan kita gunakan untuk btn edit dan delete
+				$row[] = $no;
+				$row[] = '<button type="button" class="btn btn-danger rounded-pill" onclick=' . "'addtocart(" . json_encode($field) . ")'" . '>+ Keranjang</button>';
+				$row[] = $field->kode_item;
+				$row[] = $field->nama;
+				$row[] = "Rp" . number_format($field->harga, 0, ',', '.');;
+				$row[] = $field->jumlah;
+				$rak = $this->db->get_where(TableRak, array('id' => $field->rak_id))->row();
+				$jenis = $this->db->get_where(TableJenis, array('id' => $field->jenis_id))->row();
+				$uoms = $this->db->get_where(TableUoms, array('id' => $field->uoms_id))->row();
+				$row[] = ($rak) ? $rak->nama : "-";
+				$row[] = ($jenis) ? $jenis->nama : "-";
+				$row[] = ($uoms) ? $uoms->nama : "-";
+				$row[] = $field->status == "" ? "Tidak dijual" : "Masih dijual";
+				$row[] = $field->keterangan;
+				$data[] = $row;
+			}
+		}
+		$output = array(
+			"draw" => $this->input->post('draw'),
+			"recordsTotal" => $this->datatable->count_all(),
+			"recordsFiltered" => $this->datatable->count_filtered(),
+			"data" => $data,
+		);
+		//output to json format
+		$this->output->set_output(json_encode($output));
+	}
 }
