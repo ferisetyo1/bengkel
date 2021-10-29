@@ -72,6 +72,11 @@ class Transaksi extends CI_Controller
 		$id = ($this->uri->segment(3)) ? $this->uri->segment(3) : -1;
 		$result = $this->db->get_where(TableTransaksi, array('id' => $id))->result();
 		if (count($result) > 0) {
+			$barang = $this->dbhelper->select(TableBarangTransaksi, 'id_transaksi', $_POST['id_transaksi']);
+			foreach ($barang as $key => $value) {
+				$this->dbhelper->delete(TableStock, 'id', $value->id_stock);
+				$this->dbhelper->delete(TableBarangTransaksi, 'id', $value->id);
+			}
 			$this->session->set_flashdata('msg', 'Transaksi berhasil dihapus.');
 			$result = $this->dbhelper->delete(TableTransaksi, 'id', $id);
 			redirect('transaksi');
@@ -83,13 +88,13 @@ class Transaksi extends CI_Controller
 
 	public function tambahbarang($id)
 	{
-		$result = $this->dbhelper->select(TableTransaksi,'id',$id);
-		$barang=$this->dbhelper->select(TableBarangTransaksiJumlah,'id_transaksi',$id);
-		if(($result[0])){
+		$result = $this->dbhelper->select(TableTransaksi, 'id', $id);
+		$barang = $this->dbhelper->select(TableBarangTransaksiJumlah, 'id_transaksi', $id);
+		if (($result[0])) {
 			$this->load->view('header', array('title' => 'Tambah barang', 'active' => 'transaksi'));
-			$this->load->view('tambah_barang',array('data'=>$result[0],'barang'=>$barang));
+			$this->load->view('tambah_barang', array('data' => $result[0], 'barang' => $barang));
 			$this->load->view('footer');
-		}else{
+		} else {
 			$this->session->set_flashdata('msg_error', 'Transaksi tidak ada');
 			redirect('transaksi');
 		}
@@ -97,24 +102,28 @@ class Transaksi extends CI_Controller
 
 	public function simpanbarang()
 	{
-		$pos=0;
-		$this->dbhelper->delete(TableBarangTransaksi, 'id_transaksi', $_POST['id_transaksi']);
+		$pos = 0;
+		$result = $this->dbhelper->select(TableBarangTransaksi, 'id_transaksi', $_POST['id_transaksi']);
+		foreach ($result as $key => $value) {
+			$this->dbhelper->delete(TableStock, 'id', $value->id_stock);
+			$this->dbhelper->delete(TableBarangTransaksi, 'id', $value->id);
+		}
 		foreach ($_POST['id'] as $key => $value) {
-			$d=date('YmdHis');
-			$this->db->insert(TableStock,array(
-				'barang_id'=>$value,
-				'invoice'=>"OUT$d",
-				'type'=>"out",
-				'jumlah'=>$_POST['jumlah'][$pos]*-1,
-				'keterangan'=>""
+			$d = date('YmdHisu');
+			$this->db->insert(TableStock, array(
+				'barang_id' => $value,
+				'invoice' => "OUT$d$pos",
+				'type' => "out",
+				'jumlah' => $_POST['jumlah'][$pos] * -1,
+				'keterangan' => ""
 			));
-			$this->db->insert(TableBarangTransaksi,array(
-				'id_transaksi'=>$_POST['id_transaksi'],
-				'id_barang'=>$value,
-				'id_stock'=>$this->db->insert_id(),
+			$this->db->insert(TableBarangTransaksi, array(
+				'id_transaksi' => $_POST['id_transaksi'],
+				'id_barang' => $value,
+				'id_stock' => $this->db->insert_id(),
 				// 'jumlah'=>$_POST['jumlah'][$pos],
-				'harga_jual'=>$_POST['harga'][$pos],
-				'keterangan'=>$_POST['keterangan'][$pos],
+				'harga_jual' => $_POST['harga'][$pos],
+				'keterangan' => $_POST['keterangan'][$pos],
 			));
 			$pos++;
 		}
@@ -125,7 +134,7 @@ class Transaksi extends CI_Controller
 	public function ajaxlist()
 	{
 		header('Content-Type: application/json');
-		$this->datatable->init(TableTransaksi, array("id", "nama", "create_at", "update_at"), array("nama", "create_at", "update_at", "id"), array("id", "asc"));
+		$this->datatable->init(TableTransaksiFull, array("id", "nama", "create_at", "update_at"), array("nama", "create_at", "update_at", "id"), array("id", "asc"));
 		$list = $this->datatable->get_datatables();
 		$data = array();
 		$no = $this->input->post('start');
@@ -135,10 +144,11 @@ class Transaksi extends CI_Controller
 			$row = array();
 			$row[] = $no;
 			$row[] = $field->no_trx;
-			$kendaraan = $this->db->get_where(TablePemilikKendaraan, array('id' => $field->id_kendaraan))->row();
-			$row[] = ($kendaraan) ? $kendaraan->nama : "-";
-			$row[] = ($kendaraan) ? $kendaraan->nopol : "-";
+			$row[] = $field->nama;
+			$row[] = $field->nopol;
+			$row[] = "Rp" . number_format($field->total_bayar, 0, ',', '.');
 			$row[] = $field->tgl_reservasi;
+			$row[] = $field->keterangan;
 			$row[] = $field->created_at;
 			$row[] = $field->update_at;
 			$row[] = '<a type="button" class="btn btn-warning rounded-pill" href="' . base_url("transaksi/tambahbarang/$field->id") . '">Tambah Barang</a>'

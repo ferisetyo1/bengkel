@@ -32,7 +32,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 <div class="card-content">
                     <div class="card-body">
                         <h4>List Keranjang</h4>
-                        <form action="<?= base_url('paket/simpanbarang') ?>" method="POST">
+                        <h3 id="total_bayar">Total Bayar : Rp0</h3>
+                        <form action="<?= base_url('paket/simpanbarang') ?>" method="POST" name="form-cart">
                             <input type="hidden" name="id_paket" value="<?= $data->id ?>">
                             <div class="table-responsive row-12">
                                 <table class="table table-hover mb-0" id="table2">
@@ -55,8 +56,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                                 <td><button class='btn btn-danger rounded-pill' onclick='removecart("rowcart<?= $time ?>")'>hapus</button></td>
                                                 <td><?= $value->kode_item ?></td>
                                                 <td><?= $value->nama ?> </td>
-                                                <td><input type='hidden' name='id[]' value='<?=$value->id_barang?>'><input class='form-control' type='number' name='harga[]' value='<?= $value->harga ?>'></td>
-                                                <td><input class='form-control' type='number' name='jumlah[]' value='<?= $value->jumlah ?>'></td>
+                                                <td><input type='hidden' name='id[]' value='<?=$value->id_barang?>'><input  oninput='hitungTotalHarga()' class='form-control' type='number' name='harga[]' value='<?= $value->harga ?>'></td>
+                                                <td><input  oninput='hitungTotalHarga()' class='form-control' type='number' name='jumlah[]' value='<?= $value->jumlah ?>'></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -107,8 +108,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 "<td><button class='btn btn-danger rounded-pill' onclick='removecart(\"rowcart" + date.getTime() + "\")'>hapus</button></td>" +
                 "<td>" + params.kode_item + "</td>" +
                 "<td>" + params.nama + "</td>" +
-                "<td><input type='hidden' name='id[]' value='" + params.id + "'><input class='form-control' type='number' name='harga[]' value='" + params.harga + "'></td>" +
-                "<td><input class='form-control' type='number' name='jumlah[]' value='1'></td>" +
+                "<td><input type='hidden' name='id[]' value='" + params.id + "'><input  oninput='hitungTotalHarga()' class='form-control' type='number' name='harga[]' value='" + params.harga + "'></td>" +
+                "<td><input  oninput='hitungTotalHarga()' class='form-control' type='number' name='jumlah[]' value='1'></td>" +
                 "</tr>")
         }
 
@@ -129,4 +130,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 "type": "POST"
             }
         });
+        hitungTotalHarga()
+
+        function hitungTotalHarga() {
+            var form = document.forms['form-cart']
+            var hargabayararr = []
+            var pos = 0;
+            form['harga[]'].forEach(element => {
+                hargabayararr[pos] = element.value * form['jumlah[]'][pos].value
+                pos++
+            });
+            const formatter=new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+            })
+            const total_bayar = hargabayararr.reduce((a, b) => a + b);
+            console.log(total_bayar)
+            $("#total_bayar").html("Total Bayar : " + formatter.format(total_bayar))
+        }
     </script>

@@ -132,7 +132,6 @@ class Barang extends CI_Controller
 		$no = $this->input->post('start');
 		//looping data mahasiswa
 		foreach ($list as $field) {
-			if ($field->jumlah > 0) {
 				$no++;
 				$row = array();
 				//row pertama akan kita gunakan untuk btn edit dan delete
@@ -140,7 +139,7 @@ class Barang extends CI_Controller
 				$row[] = '<button type="button" class="btn btn-danger rounded-pill" onclick=' . "'addtocart(" . json_encode($field) . ")'" . '>+ Keranjang</button>';
 				$row[] = $field->kode_item;
 				$row[] = $field->nama;
-				$row[] = "Rp" . number_format($field->harga, 0, ',', '.');;
+				$row[] = "Rp" . number_format($field->harga, 0, ',', '.');
 				$row[] = $field->jumlah;
 				$rak = $this->db->get_where(TableRak, array('id' => $field->rak_id))->row();
 				$jenis = $this->db->get_where(TableJenis, array('id' => $field->jenis_id))->row();
@@ -151,7 +150,6 @@ class Barang extends CI_Controller
 				$row[] = $field->status == "" ? "Tidak dijual" : "Masih dijual";
 				$row[] = $field->keterangan;
 				$data[] = $row;
-			}
 		}
 		$output = array(
 			"draw" => $this->input->post('draw'),

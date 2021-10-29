@@ -113,7 +113,7 @@ class Paket extends CI_Controller
 	public function ajaxlist()
 	{
 		header('Content-Type: application/json');
-		$this->datatable->init(TablePaket, array("id", "nama", "create_at", "update_at"), array("nama", "create_at", "update_at", "id"), array("id", "asc"));
+		$this->datatable->init(TableFullPaket, array("id", "nama", "create_at", "update_at"), array("nama", "create_at", "update_at", "id"), array("id", "asc"));
 		$list = $this->datatable->get_datatables();
 		$data = array();
 		$no = $this->input->post('start');
@@ -122,6 +122,7 @@ class Paket extends CI_Controller
 			$row = array();
 			$row[] = $no;
 			$row[] = $field->nama;
+			$row[] = "Rp" . number_format($field->total_bayar, 0, ',', '.');
 			$row[] = $field->create_at;
 			$row[] = $field->update_at;
 			$row[] = '<a type="button" class="btn btn-warning rounded-pill" href="' . base_url("paket/tambahbarang/$field->id") . '">Tambah Barang</a>'

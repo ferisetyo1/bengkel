@@ -34,7 +34,7 @@ class Stock extends CI_Controller
 
 	public function insert()
 	{
-		$d=date('YmdHis');
+		$d=date('YmdHisu');
 		$this->session->set_flashdata('msg', 'Stock berhasil ditambahkan.');
 		$_POST['type'] = $_POST['jumlah'] > 0 ? "in" : "out";
 		$_POST['invoice'] = $_POST['jumlah'] > 0 ? "IN$d" : "OUT$d";
@@ -64,7 +64,7 @@ class Stock extends CI_Controller
 	public function ajaxlist()
 	{
 		header('Content-Type: application/json');
-		$this->datatable->init(TableStockName, array("id", "nama", "create_at", "update_at"), array("nama", "create_at", "update_at", "id"), array("id", "asc"));
+		$this->datatable->init(TableStockName, array("id","invoice", "nama", "create_at", "update_at"), array("nama","invoice", "create_at", "update_at", "id"), array("id", "asc"));
 		$list = $this->datatable->get_datatables();
 		$data = array();
 		$no = $this->input->post('start');
@@ -79,7 +79,7 @@ class Stock extends CI_Controller
 			$row[] = $field->keterangan;
 			$row[] = $field->create_at;
 			$row[] = $field->update_at;
-			$row[] = '<a type="button" href="'.base_url("stock/delete/$field->id").'" class="btn btn-danger rounded-pill">Hapus</a>';
+			$row[] = ($this->db->get_where(TableBarangTransaksi,array('id_stock'=>$field->id))->num_rows()==0)?'<a type="button" href="'.base_url("stock/delete/$field->id").'" class="btn btn-danger rounded-pill">Hapus</a>':"";
 			$data[] = $row;
 		}
 		$output = array(
