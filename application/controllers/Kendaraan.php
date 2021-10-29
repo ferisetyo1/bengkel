@@ -95,7 +95,7 @@ class Kendaraan extends CI_Controller
 			$row[] = $field->keterangan;
 			$row[] = $field->create_at;
 			$row[] = $field->update_at;
-			$row[] = '<button type="button" class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#showTransaksi" data-json-kendaraan=' . "'" . json_encode($field) . "'" . ' data-json=' . "'" . json_encode($this->dbhelper->select(TableTransaksi,"id_kendaraan",$field->id)) . "'" . '>Transaksi</button>  '
+			$row[] = '<button type="button" class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#showTransaksi" data-json-kendaraan=' . "'" . json_encode($field) . "'" . ' data-json=' . "'" . json_encode($this->dbhelper->select(TableTransaksiFull,"id_kendaraan",$field->id)) . "'" . '>Transaksi</button>  '
 				. '<button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#inlineForm-edit" data-json=' . "'" . json_encode($field) . "'" . '>Edit</button>'
 				. '  <a type="button" class="btn btn-danger rounded-pill" href="' . base_url("kendaraan/delete/$field->id") . '">Hapus</a>';
 			$data[] = $row;

@@ -156,6 +156,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <tr>
                                         <th>No.</th>
                                         <th>No. Trx</th>
+                                        <th>Total Bayar</th>
                                         <th>Keterangan</th>
                                         <th>Tgl. Reservasi</th>
                                         <th>Tgl. Dibuat</th>
@@ -230,10 +231,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
             console.log(obj)
             var i=1
             var bodyTable=""
+            const formatter=new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+            })
             obj.forEach(element => {
                 bodyTable+="<tr>"
                 bodyTable+="<td>"+i+"</td>"
                 bodyTable+="<td>"+element.no_trx+"</td>"
+                bodyTable+="<td>"+formatter.format(element.total_bayar)+"</td>"
                 bodyTable+="<td>"+element.keterangan+"</td>"
                 bodyTable+="<td>"+element.tgl_reservasi+"</td>"
                 bodyTable+="<td>"+element.created_at+"</td>"
